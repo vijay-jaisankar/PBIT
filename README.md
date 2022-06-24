@@ -1,2 +1,2 @@
-# PBOT
-PBOT: Pride belongs in tech.
+# PBIT
+`PBIT`: Pride belongs in tech.
