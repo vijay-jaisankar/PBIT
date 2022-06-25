@@ -14,13 +14,9 @@ import pickle
 
 import string
 
-import matplotlib.pyplot as plt
 import nltk
-import numpy as np
 import pandas as pd
-import seaborn as sns
 import sklearn.model_selection as model_selection
-from sklearn.metrics import confusion_matrix
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, SnowballStemmer
 from sklearn.feature_extraction.text import (CountVectorizer, HashingVectorizer, TfidfVectorizer)
