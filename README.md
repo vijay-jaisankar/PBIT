@@ -6,3 +6,5 @@ The data used in our model can be found [here](https://www.kaggle.com/competitio
 
 ## CircleCI Tutorial
 We used [this blog post](https://circleci.com/blog/setting-up-continuous-integration-with-github/) to set up CicleCI for this project.
+
+[![CircleCI](https://circleci.com/gh/vijay-jaisankar/PBIT.svg?style=svg)](https://circleci.com/gh/vijay-jaisankar/PBIT)
