@@ -1,5 +1,5 @@
 import discord
-from tokens import DISCORD_BOT_TOKEN
+from tokens import DISCORD_BOT_TOKEN, SERVER_OWNER_ID
 import pandas as pd
 import pickle 
 
@@ -107,7 +107,6 @@ class Preprocessor:
 
     # remove id and index columns
     def removeUnwantedCols(self, col):
-        print(self.df.shape)
         self.df = self.df.drop(col, axis=1)
         return self.df
 
@@ -121,17 +120,16 @@ class Preprocessor:
 
     def preprocess(self):
         self.df = self.convertToLower()
-        self.df = self.removeStopWords()
-        self.df = self.removePunctuation()
-        self.df = self.removeNumbers()
-        self.df = self.removeURLs()
-        self.df = self.removeWhitespaces()
+        # self.df = self.removeStopWords()
+        # self.df = self.removePunctuation()
+        # self.df = self.removeNumbers()
+        # self.df = self.removeURLs()
+        # self.df = self.removeWhitespaces()
         # self.df = self.snowballstemmer()
         # self.df = self.porterstemmer()
         # self.df = self.lemmatize()
         # self.df = self.wordTokenization()
 
-        print(self.df.head())
         return self.df
 
 
@@ -174,10 +172,8 @@ class TrainTestData:
         self.vectorizer.fit(self.appendDf)
 
         self.trainData = self.vectorizer.transform(self.trainDf["comment_text"])
-        print(self.trainData.shape)
 
         self.testData = self.vectorizer.transform(self.testDf["comment_text"])
-        print(self.testData.shape)
         self.X = self.trainData
 
         # self.doDecomposition() 
@@ -278,7 +274,6 @@ async def on_ready():
 """
 @client.event
 async def on_message(message):
-    print(message)
     username = str(message.author).split("#")[0]
     user_message = str(message.content)
     channel = str(message.channel.name)
@@ -294,8 +289,11 @@ async def on_message(message):
     if int(label) == 1:
         await message.delete()
         await message.channel.send(f"{message.author.mention}, the bot has detected hate speech on your end. Please follow the community guidelines. Thanks!")  
-    else:
-        await message.channel.send(f"Hello, {username}! Label: {label}")
+        
+        # Send DM to server owner
+        user = await client.fetch_user(SERVER_OWNER_ID)
+        channel = await user.create_dm()
+        await channel.send(f"🚨 Flagged: {user_message}")
 
     print(f"{username} said: {user_message} in {channel}")
 

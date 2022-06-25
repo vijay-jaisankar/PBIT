@@ -1,1 +1,3 @@
 DISCORD_BOT_TOKEN="your-token-here"
+COHERE_TOKEN="your-api-key-here"
+SERVER_OWNER_ID="your-id-here"
