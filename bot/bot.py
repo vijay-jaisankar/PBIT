@@ -1,5 +1,13 @@
 import discord
-from tokens import DISCORD_BOT_TOKEN, SERVER_OWNER_ID
+"""
+    CircleCI - pass tests
+"""
+try:
+    from tokens import DISCORD_BOT_TOKEN, SERVER_OWNER_ID
+except Exception as e:
+    DISCORD_BOT_TOKEN = "nevergonnagiveyouup"
+    SERVER_OWNER_ID = "382072844714672207"
+
 import pandas as pd
 import pickle 
 
