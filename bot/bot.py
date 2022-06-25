@@ -121,17 +121,17 @@ class Preprocessor:
 
     def preprocess(self):
         self.df = self.convertToLower()
-        # self.df = self.removeStopWords()
-        #self.df = self.removePunctuation()
-        #self.df = self.removeNumbers()
-        #self.df = self.removeURLs()
-        #self.df = self.removeWhitespaces()
+        self.df = self.removeStopWords()
+        self.df = self.removePunctuation()
+        self.df = self.removeNumbers()
+        self.df = self.removeURLs()
+        self.df = self.removeWhitespaces()
         # self.df = self.snowballstemmer()
         # self.df = self.porterstemmer()
         # self.df = self.lemmatize()
         # self.df = self.wordTokenization()
 
-        # print(self.df.head())
+        print(self.df.head())
         return self.df
 
 
@@ -275,8 +275,6 @@ async def on_ready():
 """
     @Event
     Called when any message appears on the server
-
-    @Todo: NLP Processing
 """
 @client.event
 async def on_message(message):
@@ -292,8 +290,14 @@ async def on_message(message):
     # Get the label
     label = get_label(user_message)
 
+    # Delete message in case of "1" label
+    if int(label) == 1:
+        await message.delete()
+        await message.channel.send(f"{message.author.mention}, the bot has detected hate speech on your end. Please follow the community guidelines. Thanks!")  
+    else:
+        await message.channel.send(f"Hello, {username}! Label: {label}")
+
     print(f"{username} said: {user_message} in {channel}")
-    await message.channel.send(f"Hello, {username}! Label: {label}")
 
 
 
