@@ -230,20 +230,6 @@ test_train = getTTData
 
 
 """
-    Load model and train/test data
-"""
-# model = None 
-# with open("lr.pkl", "rb") as f:
-#     model = pickle.load(f)
-
-# test_train = None
-# with open("test_train_data.pkl", "rb") as f2:
-#     test_train = pickle.load(f2)
-
-# print(model)
-# print(test_train)
-
-"""
     Model - Submission Pipeline
 """
 class SubmissionPipeline:
