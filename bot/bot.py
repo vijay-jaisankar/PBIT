@@ -302,4 +302,5 @@ async def on_message(message):
 """
     Running the app
 """
-client.run(token)
+if __name__ == "__main__":
+    client.run(token)
