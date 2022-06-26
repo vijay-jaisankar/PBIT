@@ -136,16 +136,6 @@ class Preprocessor:
 
     def preprocess(self):
         self.df = self.convertToLower()
-        # self.df = self.removeStopWords()
-        # self.df = self.removePunctuation()
-        # self.df = self.removeNumbers()
-        # self.df = self.removeURLs()
-        # self.df = self.removeWhitespaces()
-        # self.df = self.snowballstemmer()
-        # self.df = self.porterstemmer()
-        # self.df = self.lemmatize()
-        # self.df = self.wordTokenization()
-
         return self.df
 
 
@@ -160,18 +150,6 @@ class TrainTestData:
     def __init__(self, trainDf, testDf) -> None:
         self.trainDf = trainDf
         self.testDf = testDf
-
-    def doSmote(self):
-        sm = SMOTE()
-        self.X, self.Y = sm.fit_resample(self.X, self.Y)
-        return self.trainData, self.testData
-
-    def doDecomposition(self):
-        lsa = TruncatedSVD(n_components=2)
-        lsa.fit(self.X)
-        self.trainData = lsa.transform(self.X)
-        self.testData = lsa.transform(self.testData)
-        
 
     def get_X(self, minDocumentCount):
 
@@ -303,6 +281,7 @@ async def on_message(message):
     channel_prac = str(COHERE_CHANNEL_NAME)
     if channel == channel_prac:
         class_preds = classify_cohere(user_message)
+        print(class_preds)
 
         # Generate report
         reply = ""
@@ -312,7 +291,20 @@ async def on_message(message):
         reply += str(class_preds)
         reply += "\n"
         reply += '"""'
-        await message.channel.send(reply)
+        x = getattr(class_preds[0], "confidence")
+        y = getattr(x[1],"confidence")
+        if y > 0.8:
+            await message.channel.send(reply)
+            await message.delete()
+            await message.channel.send(f"{message.author.mention}, the bot has detected hate speech on your end. Please follow the community guidelines. Thanks!")  
+            
+            # Send DM to server owner
+            user = await client.fetch_user(SERVER_OWNER_ID)
+            channel = await user.create_dm()
+            await channel.send(f"🚨 Flagged: {user_message}")
+
+        print(f"{username} said: {user_message} in {channel}")
+
         return 
 
 
