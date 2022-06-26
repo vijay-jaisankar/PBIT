@@ -3,16 +3,15 @@ import discord
     CircleCI - pass tests
 """
 try:
-    from tokens import DISCORD_BOT_TOKEN, SERVER_OWNER_ID
+    from tokens import DISCORD_BOT_TOKEN, SERVER_OWNER_ID, COHERE_CHANNEL_NAME, COHERE_TOKEN, COHERE_MODEL_URL
 except Exception as e:
     DISCORD_BOT_TOKEN = "nevergonnagiveyouup"
     SERVER_OWNER_ID = "382072844714672207"
+    COHERE_CHANNEL_NAME = "yuripoosi"
+    COHERE_TOKEN = "nevergonnaletyoudown"
+    COHERE_MODEL_URL = "unsuable.com"
 
 import pandas as pd
-import pickle 
-
-
-import string
 
 import nltk
 import pandas as pd
@@ -23,7 +22,20 @@ from sklearn.feature_extraction.text import (CountVectorizer, HashingVectorizer,
 from imblearn.over_sampling import SMOTE
 from sklearn.linear_model import LogisticRegression
 from sklearn.decomposition import PCA, TruncatedSVD
+import cohere
+import json
 
+"""
+    Initialise Cohere
+"""
+co = cohere.Client(COHERE_TOKEN)
+
+def classify_cohere(s):
+    classifications = co.classify(
+        model=COHERE_MODEL_URL,
+        inputs=[s]
+    )
+    return classifications.classifications
 
 
 train_df = pd.read_csv("../data/trimmed.csv")
@@ -282,9 +294,27 @@ async def on_message(message):
     user_message = str(message.content)
     channel = str(message.channel.name)
 
+
     # Avoid infinite loop
     if message.author == client.user:
         return 
+
+    # Check if the message was sent in the cohere (i.e practice) channel
+    channel_prac = str(COHERE_CHANNEL_NAME)
+    if channel == channel_prac:
+        class_preds = classify_cohere(user_message)
+
+        # Generate report
+        reply = ""
+        reply += f"Hey, {message.author.mention}! Here's your report. \n"
+        reply += '"""'
+        reply += "\n"
+        reply += str(class_preds)
+        reply += "\n"
+        reply += '"""'
+        await message.channel.send(reply)
+        return 
+
 
     # Get the label
     label = get_label(user_message)
